@@ -46,7 +46,7 @@ Resource           resource.robot
 
 
 Можливість додати предмет закупівлі в тендер
-  ${item}=  Підготувати дані для створення предмету закупівлі  ${USERS.users['${tender_owner}'].initial_data.data['items'][0]['classification']['id']}
+  ${item}=  Підготувати дані для створення предмету закупівлі  ${USERS.users['${tender_owner}'].initial_data.data['items'][0]['classification']['id']}  ${USERS.users['${tender_owner}'].tender_data.data.procurementMethodType}
   Run As  ${tender_owner}  Додати предмет закупівлі  ${TENDER['TENDER_UAID']}  ${item}
   ${item_id}=  get_id_from_object  ${item}
   ${item_data}=  Create Dictionary  item=${item}  item_id=${item_id}
@@ -56,6 +56,13 @@ Resource           resource.robot
 
 Можливість видалити предмет закупівлі з тендера
   Run As  ${tender_owner}  Видалити предмет закупівлі  ${TENDER['TENDER_UAID']}  ${USERS.users['${tender_owner}'].item_data.item_id}
+
+
+Перевірити можливість зміни поля ${field_name} предмета ${item_id} тендера на значення ${new_value} для користувача ${username}
+  ${prev_value} =  Отримати інформацію із предмету  ${username}  ${TENDER['TENDER_UAID']}  ${item_id}  ${field_name}
+  Run As  ${username}  Внести зміни в предмет тендера  ${username}  ${TENDER['TENDER_UAID']  ${item_id}  ${field_name}  ${new_value}
+  ${next_value} =  Отримати інформацію із предмету  ${username}  ${TENDER['TENDER_UAID']}  ${item_id}  ${field_name}
+  ${username}  Порівняти об'єкти  ${prev_value}  ${next_value}
 
 
 Звірити відображення поля ${field} документа ${doc_id} із ${left} для користувача ${username}

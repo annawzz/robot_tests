@@ -151,6 +151,14 @@ Library  openprocurement_client_helper.py
   Call Method  ${USERS.users['${username}'].client}  patch_tender  ${tender}
 
 
+Внести зміни в предмет тендера
+  [Arguments]  ${username}  ${tender_uaid}  ${item_id}  ${field_name}  ${fieldvalue}
+  ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  ${item_index}=  get_object_index_by_id  ${tender.data['items']}  ${item_id}
+  ${item_id}=  Get Variable Value  ${tender.data['items'][${item_index}].id}
+  Set_To_Object  ${tender.data['items']}   ${fieldname}   ${fieldvalue}
+
+
 ##############################################################################
 #             Feature operations
 ##############################################################################

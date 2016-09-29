@@ -2799,7 +2799,7 @@
             }
         }
     ],
-    "classifications":[
+    "classifications_other":[
         {
            "classification": {
                "scheme": "CAV",
@@ -2835,6 +2835,22 @@
                "description": "Таунхаус"
            }
        }
+    ],
+    "classifications_financial":[
+        {
+           "classification": {
+               "scheme": "CAV",
+               "id": "07100000-0",
+               "description": "Права вимоги за кредитними договорами"
+           }
+        },
+        {
+           "classification": {
+               "scheme": "CAV",
+               "id": "07110000-3",
+               "description": "Права вимоги за кредитними договорами"
+           }
+        }
     ],
     "units": [
         {
@@ -2918,14 +2934,18 @@
             "name": "блок"
         }
     ],
-    "cavs": [
+    "cavs_other": [
         "04000000-8",
         "04100000-9",
         "04111000-9",
         "04111100-0",
         "04111200-1"
     ],
-    "items_base_data": [
+    "cavs_financial": [
+        "07100000-0",
+        "07110000-3"
+    ],
+    "items_base_data_other": [
           {
            "cav_id": "04000000-8",
            "description": "Нерухоме майно",
@@ -2979,6 +2999,30 @@
            "unit": {
                "code": "H87",
                "name": "штуки"
+           }
+       }
+    ],
+    "items_base_data_financial": [
+          {
+           "cav_id": "07100000-0",
+           "description": "Права вимоги за кредитними договорами",
+           "description_ru": "Права и требования по кредитным договорам",
+           "description_en": "Rights and claims under credit agreements",
+           "quantity": 50,
+           "unit": {
+               "code": "E48",
+               "name": "послуга"
+           }
+       },
+        {
+           "cav_id": "07110000-3",
+           "description": "Права вимоги за кредитними договорами",
+           "description_ru": "Права и требования по кредитным договорам",
+           "description_en": "Rights and claims under credit agreements",
+           "quantity": 50,
+           "unit": {
+               "code": "E48",
+               "name": "послуга"
            }
        }
     ]

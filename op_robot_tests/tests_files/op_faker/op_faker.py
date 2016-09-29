@@ -21,9 +21,12 @@ class OP_Provider(BaseProvider):
     word_list = __fake_data.words
     procuringEntities = __fake_data.procuringEntities
     addresses = __fake_data.addresses
-    classifications = __fake_data.classifications
-    cavs = __fake_data.cavs
-    items_base_data = __fake_data.items_base_data
+    classifications_other = __fake_data.classifications_other
+    cavs_other = __fake_data.cavs_other
+    items_base_data_other = __fake_data.items_base_data_other
+    classifications_financial = __fake_data.classifications_financial
+    cavs_financial = __fake_data.cavs_financial
+    items_base_data_financial = __fake_data.items_base_data_financial
 
     @classmethod
     def randomize_nb_elements(self, number=10, le=60, ge=140):
@@ -89,11 +92,19 @@ class OP_Provider(BaseProvider):
         return deepcopy(self.random_element(self.procuringEntities))
 
     @classmethod
-    def cav(self):
-        return self.random_element(self.cavs)
+    def cav_other(self):
+        return self.random_element(self.cavs_other)
 
     @classmethod
-    def fake_item(self, cav_group=None):
+    def cav_financial(self):
+        return self.random_element(self.cavs_other)
+
+    @classmethod
+    def cav_financial(self):
+        return self.random_element(self.cavs_financial)
+
+    @classmethod
+    def fake_item(self, cav_group, mode):
         """
         Generate a random item for openprocurement tenders
 
@@ -101,25 +112,46 @@ class OP_Provider(BaseProvider):
             from a specific cav group. cav group is three digits
             in the beginning of each cav id.
         """
-        if cav_group is None:
-            item_base_data = self.random_element(self.items_base_data)
-        else:
+        # if cav_group is None:
+        #     item_base_data = self.random_element(self.items_base_data)
+        # else:
+        #for other assets
+        print str(mode)
+        if str(mode) == 'dgfOtherAssets':
             cav_group = str(cav_group)
             similar_cavs = []
-            for cav_element in self.cavs:
+            for cav_element in self.cavs_other:
                 if cav_element.startswith(cav_group):
                     similar_cavs.append(cav_element)
             cav = self.random_element(similar_cavs)
-            for entity in self.items_base_data:
+            for entity in self.items_base_data_other:
                 if entity["cav_id"] == cav:
                     item_base_data = entity
                     break
-
         # choose appropriate dkpp classification for item_base_data's cpv
-        for entity in self.classifications:
-            if entity["classification"]["id"] == item_base_data["cav_id"]:
-                classification = entity
-                break
+            for entity in self.classifications_other:
+                if entity["classification"]["id"] == item_base_data["cav_id"]:
+                    classification = entity
+                    break
+
+        #for financial assets
+        if str(mode) == 'dgfFinancialAssets':
+            cav_group = str(cav_group)
+            print(cav_group)
+            similar_cavs = []
+            for cav_element in self.cavs_financial:
+                if cav_element.startswith(cav_group):
+                    similar_cavs.append(cav_element)
+            cav = self.random_element(similar_cavs)
+            for entity in self.items_base_data_financial:
+                if entity["cav_id"] == cav:
+                    item_base_data = entity
+                    break
+        # choose appropriate dkpp classification for item_base_data's cpv
+            for entity in self.classifications_financial:
+                if entity["classification"]["id"] == item_base_data["cav_id"]:
+                    classification = entity
+                    break
 
         address = self.random_element(self.addresses)
         item = {
