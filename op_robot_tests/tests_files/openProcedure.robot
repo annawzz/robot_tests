@@ -270,16 +270,6 @@ ${ITEM_MEAT}        ${True}
   Remove From Dictionary  ${USERS.users['${tender_owner}'].tender_data.data}  description
 
 
-Можливість змінити опис предмета закупівлі тендера
-  [Tags]   ${USERS.users['${tender_owner}'].broker}: Додання документації
-  ...      tender_owner
-  ...      ${USERS.users['${tender_owner}'].broker}
-  ...      modify_auction_item  level3
-  [Setup]  Дочекатись синхронізації з майданчиком  ${tender_owner}
-  ${new_description}=  create_fake_sentence
-  ${item}=  Set Variable  ${USERS.users['${tender_owner}'].tender_data.data.items[0]['classification']['id']}
-  Перевірити можливість зміни поля description предмета ${item} тендера на значення ${new_description} для користувача ${tender_owner}
-
 # Можливість змінити опис першого предмету закупівлі тендеру
 #   [Tags]   ${USERS.users['${tender_owner}'].broker}: Можливість редагувати тендер
 #   ...      tender_owner
@@ -288,8 +278,8 @@ ${ITEM_MEAT}        ${True}
 #   [Setup]  Дочекатись синхронізації з майданчиком  ${tender_owner}
 #   [Teardown]  Оновити LAST_MODIFICATION_DATE
 #   ${new_description}=  create_fake_sentence
-#   Можливість змінити поле description тендера на ${new_description}
-#   Remove From Dictionary  ${USERS.users['${tender_owner}'].tender_data.data}  description
+#   ${item}=  Set Variable  ${USERS.users['${tender_owner}'].initial_data.data['items'][0]['classification']['id']}
+#   Перевірити можливість зміни поля description предмета ${item} тендера на значення ${new_description} для користувача ${tender_owner}
 
 
 Можливість додати документацію до тендера
