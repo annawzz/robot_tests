@@ -27,6 +27,8 @@ class OP_Provider(BaseProvider):
     classifications_financial = __fake_data.classifications_financial
     cavs_financial = __fake_data.cavs_financial
     items_base_data_financial = __fake_data.items_base_data_financial
+    additionalIdentifiers = __fake_data.additionalIdentifiers
+
 
     @classmethod
     def randomize_nb_elements(self, number=10, le=60, ge=140):
@@ -97,11 +99,11 @@ class OP_Provider(BaseProvider):
 
     @classmethod
     def cav_financial(self):
-        return self.random_element(self.cavs_other)
+        return self.random_element(self.cavs_financial)
 
     @classmethod
-    def cav_financial(self):
-        return self.random_element(self.cavs_financial)
+    def additionalIdentifier(self):
+       return self.random_element(self.additionalIdentifiers)
 
     @classmethod
     def fake_item(self, cav_group, mode):
@@ -112,9 +114,6 @@ class OP_Provider(BaseProvider):
             from a specific cav group. cav group is three digits
             in the beginning of each cav id.
         """
-        # if cav_group is None:
-        #     item_base_data = self.random_element(self.items_base_data)
-        # else:
         #for other assets
         print str(mode)
         if str(mode) == 'dgfOtherAssets':
@@ -128,7 +127,6 @@ class OP_Provider(BaseProvider):
                 if entity["cav_id"] == cav:
                     item_base_data = entity
                     break
-        # choose appropriate dkpp classification for item_base_data's cpv
             for entity in self.classifications_other:
                 if entity["classification"]["id"] == item_base_data["cav_id"]:
                     classification = entity
@@ -147,7 +145,6 @@ class OP_Provider(BaseProvider):
                 if entity["cav_id"] == cav:
                     item_base_data = entity
                     break
-        # choose appropriate dkpp classification for item_base_data's cpv
             for entity in self.classifications_financial:
                 if entity["classification"]["id"] == item_base_data["cav_id"]:
                     classification = entity

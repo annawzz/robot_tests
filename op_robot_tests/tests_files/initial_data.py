@@ -353,11 +353,22 @@ def test_tender_data_dgf_other(params):
     for i in range(params['number_of_items']):
         new_item = test_item_data(cav_group_other, data['procurementMethodType'])
         data['items'].append(new_item)
+    return data
 
-    # data['procurementMethodType'] = 'dgfFinancialAssets'
+def test_tender_data_dgf_financial(params):
+    data = test_tender_data(params, [])
 
-    # cav_group_financial = fake.cav_financial()[:3]
-    # for i in range(params['number_of_items']):
-    #     new_item = test_item_data(cav_group_financial, data['procurementMethodType'])
-    #     data['items'].append(new_item)
+    period_dict = {}
+    inc_dt = get_now()
+    period_dict["auctionPeriod"] = {}
+    inc_dt += timedelta(minutes=params['intervals']['auction'][0])
+    period_dict["auctionPeriod"]["startDate"] = inc_dt.isoformat()
+    data.update(period_dict)
+
+    data['procurementMethodType'] = 'dgfFinancialAssets'
+
+    cav_group_financial = fake.cav_financial()[:3]
+    for i in range(params['number_of_items']):
+        new_item = test_item_data(cav_group_financial, data['procurementMethodType'])
+        data['items'].append(new_item)
     return data
