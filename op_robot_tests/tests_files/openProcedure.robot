@@ -546,9 +546,18 @@ ${ITEM_MEAT}        ${True}
   [Tags]   ${USERS.users['${provider}'].broker}: Подання пропозиції
   ...      provider
   ...      ${USERS.users['${provider}'].broker}
-  ...      modify_bid_by_provider
+  ...      add_doc_to_bid_by_provider
   [Teardown]  Оновити LAST_MODIFICATION_DATE
   Можливість завантажити документ в пропозицію користувачем ${provider}
+
+
+Можливість завантажити фінансову ліцензію в пропозицію першим учасником
+  [Tags]   ${USERS.users['${provider}'].broker}: Подання пропозиції
+  ...      provider
+  ...      ${USERS.users['${provider}'].broker}
+  ...      add_financial_license_to_bid_by_provider
+  [Teardown]  Оновити LAST_MODIFICATION_DATE
+  Можливість завантажити фінансову лізенцію в пропозицію користувачем ${provider}
 
 
 Можливість змінити документацію цінової пропозиції першим учасником

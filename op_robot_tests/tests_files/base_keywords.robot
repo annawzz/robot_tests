@@ -598,6 +598,11 @@ Resource           resource.robot
   Set To Dictionary  ${USERS.users['${username}'].bidresponses}  bid_doc_modified=${bid_doc_modified}
   Remove File  ${file_path}
 
+
+Можливість завантажити фінансову лізенцію в пропозицію користувачем ${username}
+  ${financial_license_path}  ${file_title}  ${file_content}=  create_fake_doc
+  Завантажити фінансову ліцензію  ${username}  ${TENDER['TENDER_UAID']}  ${financial_license_path}
+
 ##############################################################################################
 #             Cancellations
 ##############################################################################################
