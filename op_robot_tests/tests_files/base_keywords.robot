@@ -49,6 +49,12 @@ Resource           resource.robot
 Можливість додати ілюстрацію до тендера
   ${image_path}=  create_fake_image
   Завантажити ілюстрацію  ${tender_owner}  ${TENDER['TENDER_UAID']}  ${image_path}
+  Run As  ${tender_owner}  Завантажити ілюстрацію  ${TENDER['TENDER_UAID']}  ${image_path}
+
+
+Можливість додати Virtual Data Room до тендера
+  # TODO: Generate new URL on each run
+  Run As  ${tender_owner}  Додати Virtual Data Room  ${TENDER['TENDER_UAID']}  http://example.invalid/VDR/4815162342
 
 
 Можливість додати предмет закупівлі в тендер
@@ -602,6 +608,10 @@ Resource           resource.robot
 Можливість завантажити фінансову лізенцію в пропозицію користувачем ${username}
   ${financial_license_path}  ${file_title}  ${file_content}=  create_fake_doc
   Завантажити фінансову ліцензію  ${username}  ${TENDER['TENDER_UAID']}  ${financial_license_path}
+
+Можливість завантажити протокол аукціону в пропозицію користувачем ${username}
+  ${auction_protocol_path}  ${file_title}  ${file_content}=  create_fake_doc
+  Завантажити протокол аукціону  ${username}  ${TENDER['TENDER_UAID']}  ${auction_protocol_path}
 
 ##############################################################################################
 #             Cancellations

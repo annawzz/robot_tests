@@ -72,6 +72,11 @@ Library  openprocurement_client_helper.py
   Завантажити документ в ставку з типом  ${username}  ${tender_uaid}  ${filepath}  documentType=financialLicense
 
 
+Завантажити протокол аукціону
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
+  Завантажити документ в ставку з типом  ${username}  ${tender_uaid}  ${filepath}  documentType=auctionProtocol
+
+
 Завантажити документ в ставку з типом
   [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${documentType}
   ${document}=  Завантажити документ в ставку  ${username}  ${filepath}  ${tender_uaid}
@@ -82,6 +87,15 @@ Library  openprocurement_client_helper.py
   ${reply}=  Змінити документацію в ставці  ${username}  ${tender_uaid}  ${document['upload_response']}  ${document['upload_response']['data'].id}
   Log  ${reply}
   [return]  ${reply}
+
+
+Додати Virtual Data Room
+  [Arguments]  ${username}  ${tender_uaid}  ${vdr_url}  ${title}=Sample Virtual Data Room
+  ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  ${tender}=  set_access_key  ${tender}  ${USERS.users['${username}'].access_token}
+  ${doc_data}=  Create Dictionary  documentType=virtualDataRoom  url=${vdr_url}  title=${title}
+  ${doc_data}=  Create Dictionary  data=${doc_data}
+  Call Method  ${USERS.users['${username}'].client}  create_thin_document  ${tender}  ${doc_data}
 
 
 Отримати інформацію із документа
@@ -669,8 +683,12 @@ Library  openprocurement_client_helper.py
   ...      [Return] Reply of API
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
-  ${award}=  create_data_dict   data.status  unsuccessful
+  ${description}=  create_fake_sentence
+  ${award}= Create Dictionary  data.title  Disqualified
+  Set To Dictionary  ${award.data}  description=${description}
   Set To Dictionary  ${award.data}  id=${tender.data.awards[${award_num}].id}
+  # ${award}=  create_data_dict   data.status  unsuccessful
+  Set To Dictionary  ${award.data}  data.status  unsuccessful
   ${reply}=  Call Method  ${USERS.users['${username}'].client}  patch_award  ${tender}  ${award}
   Log  ${reply}
   [Return]  ${reply}

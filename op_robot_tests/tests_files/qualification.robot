@@ -229,12 +229,33 @@ ${award_index}      ${0}
   Run As  ${tender_owner}  Підтвердити постачальника  ${TENDER['TENDER_UAID']}  0
 
 
+Можливість завантажити постачальником протокол аукціону в пропозицію
+  [Tags]   ${USERS.users['${provider}'].broker}: Подання пропозиції
+  ...      provider
+  ...      ${USERS.users['${provider}'].broker}
+  ...      add_auction_protocol_to_bid_by_provider_for_qualification
+  [Teardown]  Оновити LAST_MODIFICATION_DATE
+  Можливість завантажити протокол аукціону в пропозицію користувачем ${provider}
+
+
 Можливість скасувати рішення кваліфікації
   [Tags]  ${USERS.users['${tender_owner}'].broker}: Процес кваліфікації
   ...  tender_owner
   ...  ${USERS.users['${tender_owner}'].broker}
   ...  qualification_cancel_first_award_qualification  level1
   Run As  ${tender_owner}  Скасування рішення кваліфікаційної комісії  ${TENDER['TENDER_UAID']}  0
+
+
+#Можливість завантажити документ з причинами дискваліфікації постачальника
+# TODO!!!!
+
+Можливість дискваліфікувати постачальника
+  [Tags]  ${USERS.users['${tender_owner}'].broker}: Процес кваліфікації
+  ...  tender_owner
+  ...  ${USERS.users['${tender_owner}'].broker}
+  ...  qualification_cancel_first_award_qualification  level1
+  Run As  ${tender_owner}  Дискваліфікувати постачальника  ${TENDER['TENDER_UAID']}  0
+
 
 
 Можливість завантажити документ рішення кваліфікаційної комісії для підтвердження нового постачальника
