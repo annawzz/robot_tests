@@ -73,8 +73,20 @@ Library  openprocurement_client_helper.py
 
 
 Завантажити протокол аукціону
-  [Arguments]  ${username}  ${tender_uaid}  ${filepath}
-  Завантажити документ в ставку з типом  ${username}  ${tender_uaid}  ${filepath}  documentType=auctionProtocol
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_num}
+  ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  ${bid_id}=  Get Variable Value  ${tender.data.awards[${award_index}].bid_id}
+  Log  ${bid_id}
+  ${tender}=  set_access_key  ${tender}  ${USERS.users['${username}'].access_token}
+  ${response}=  Call Method  ${USERS.users['${username}'].client}  upload_bid_document  ${filepath}  ${tender}  ${bid_id}  documents
+  ${document} =  Create Dictionary   filepath=${path}  upload_response=${response}
+  Keep In Dictionary  ${document['upload_response']['data']}  id
+  Log  ${document}
+  Set To Dictionary  ${document['upload_response']['data']}  documentType=auctionProtocol
+  Log  ${document}
+  ${reply}=  Змінити документацію в ставці  ${username}  ${tender_uaid}  ${document['upload_response']}  ${document['upload_response']['data'].id}
+  Log  ${reply}
+  [return]  ${reply}
 
 
 Завантажити документ в ставку з типом
@@ -659,6 +671,21 @@ Library  openprocurement_client_helper.py
   [Return]  ${doc}
 
 
+Завантажити документ з причинами дискваліфікації постачальника
+  [Arguments]  ${username}  ${file_path}  ${tender_uaid}  ${award_num}
+  ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  ${description}=  create_fake_sentence
+  ${url}=  Set Variable  http://public.docs-sandbox.ea.openprocurement.org/get/a505c8ece6a64d2781396f1f47cc10e7?KeyID=87c9f4bd&Signature=Jqa4o%2Bz12kOqPVXO2KtxlhhQUxBOJYtlcPdqcRH%2Bsmh%2BSsfRSosV0CIcBO765U3gs0JVZa%2BmSc29HEySwubyAw%3D%3D
+  ${title}=  Set Variable  Disqualified_reason.pdf
+  ${hash}=  Set Variable  md5:00000000000000000000000000000000
+  ${format}=  Set Variable  application/pdf
+  ${doc_data}=  Create Dictionary  url=${url}  title=${title}  description=${description}  hash=${hash}  format=${format}
+  ${doc_data}=  Create Dictionary  data=${doc_data}
+  ${doc}=  Call Method  ${USERS.users['${username}'].client}  create_reasons_for_cancellation_of_qualification_document  ${tender}  ${tender.data.awards[${award_num}].id}  ${doc_data}  ${USERS.users['${username}'].access_token}
+  Log  ${doc}
+  [Return]  ${doc}
+
+
 Підтвердити постачальника
   [Documentation]
   ...      [Arguments] Username, tender uaid and number of the award to confirm
@@ -684,11 +711,12 @@ Library  openprocurement_client_helper.py
   [Arguments]  ${username}  ${tender_uaid}  ${award_num}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ${description}=  create_fake_sentence
-  ${award}= Create Dictionary  data.title  Disqualified
-  Set To Dictionary  ${award.data}  description=${description}
+  ${title}=  Set Variable  Disqualified
+  ${award}=  Run Keyword If  '${tender.data.awards[${award_num}].suppliers[0].identifier.id}' == '${tender.data.awards[0].suppliers[0].identifier.id}'
+  ...        create_data_dict   data.status  unsuccessful
   Set To Dictionary  ${award.data}  id=${tender.data.awards[${award_num}].id}
-  # ${award}=  create_data_dict   data.status  unsuccessful
-  Set To Dictionary  ${award.data}  data.status  unsuccessful
+  Set To Dictionary  ${award.data}  description=${description}
+  Set To Dictionary  ${award.data}  title=${title}
   ${reply}=  Call Method  ${USERS.users['${username}'].client}  patch_award  ${tender}  ${award}
   Log  ${reply}
   [Return]  ${reply}
