@@ -273,7 +273,7 @@ def test_bid_value(max_value_amount):
     return munchify({
         "value": {
             "currency": "UAH",
-            "amount": round(random.uniform(max_value_amount, max_value_amount * 1.5), 2),
+            "amount": round(random.uniform(max_value_amount, max_value_amount * 1.05), 2),
             "valueAddedTaxIncluded": True
         }
     })
