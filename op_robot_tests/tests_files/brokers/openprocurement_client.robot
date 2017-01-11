@@ -92,7 +92,7 @@ Library  openprocurement_client_helper.py
   Log  ${document}
   Set To Dictionary  ${document['upload_response']['data']}  documentType=${documentType}
   Log  ${document}
-  ${reply}=  openprocurement_client.Змінити документацію в ставці  ${username}  ${tender_uaid}  ${document['upload_response']}  ${document['upload_response']['data'].id}
+  ${reply}=  openprocurement_client.Змінити документ в ставці  ${username}  ${tender_uaid}  ${document['upload_response']}  ${document['upload_response']['data'].id}
   Log  ${reply}
   [return]  ${reply}
 
@@ -664,7 +664,7 @@ Library  openprocurement_client_helper.py
   [return]  ${uploaded_file}
 
 
-Змінити документ в ставці
+Оновити документ в ставці
   [Arguments]  ${username}  ${tender_uaid}  ${path}  ${docid}
   ${bid_id}=  Get Variable Value   ${USERS.users['${username}'].bidresponses['resp'].data.id}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
@@ -675,7 +675,7 @@ Library  openprocurement_client_helper.py
   [return]  ${uploaded_file}
 
 
-Змінити документацію в ставці
+Змінити документ в ставці
   [Arguments]  ${username}  ${tender_uaid}  ${doc_data}  ${docid}
   ${bid_id}=  Get Variable Value   ${USERS.users['${username}'].bidresponses['resp'].data.id}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
