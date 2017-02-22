@@ -584,42 +584,49 @@ def local_path_to_file(file_name):
 
 
 def create_artifact():
-    api = BuiltIn().get_variable_value('${api_version}')
-    tender_data = BuiltIn().get_variable_value('${TENDER}')
+    suite = BuiltIn().get_variable_value('${SUITE NAME}')
+    used_roles = BuiltIn().get_variable_value('@{USED_ROLES}')
+    number_of_bids = BuiltIn().get_variable_value('${NUMBER_OF_BIDS}')
     users = BuiltIn().get_variable_value('${USERS.users}')
-    mode = BuiltIn().get_variable_value('${MODE}')
+    tender_data = BuiltIn().get_variable_value('${TENDER}')
     tender_owner = BuiltIn().get_variable_value('${tender_owner}')
-    provider = BuiltIn().get_variable_value('${provider}')
-    provider1 = BuiltIn().get_variable_value('${provider1}')
 
     artifact = {
-        'api_version': api,
-        'mode': mode,
+        'api_version': BuiltIn().get_variable_value('${api_version}', ''),
+        'mode': BuiltIn().get_variable_value('${MODE}', ''),
         'tender_uaid': tender_data.get('TENDER_UAID', ''),
         'last_modification_date': tender_data.get('LAST_MODIFICATION_DATE', ''),
         'tender_owner': users[tender_owner].get('broker', ''),
         'access_token': users[tender_owner].get('access_token', ''),
         'tender_id': users[tender_owner]['tender_data']['data'].get('id', ''),
-        'provider_access_token': users[provider].get('access_token', ''),
-        'provider1_access_token': users[provider1].get('access_token', ''),
-        'provider_bid_id': users[provider].get('bid_id', ''),
-        'provider1_bid_id': users[provider1].get('bid_id', ''),
-        'provider_bid_start_value': users[provider].get('bid_start_value',''),
-        'provider1_bid_start_value': users[provider1].get('bid_start_value','')
+        'number_of_bids': number_of_bids
     }
-    if (users[provider].get('bid_changed_value','') != '' and artifact['provider_bid_start_value'] != ''):
-        if(float(users[provider].get('bid_changed_value','')) != 0):
-            artifact['provider_bid_difference'] = float(users[provider].get('bid_changed_value','')) - float(artifact['provider_bid_start_value'])
-    else:
-        artifact['provider_bid_difference'] = 0
-    if (users[provider1].get('bid_changed_value','') != '' and artifact['provider1_bid_start_value'] != ''):
-        if(float(users[provider1].get('bid_changed_value','')) != 0):
-            artifact['provider1_bid_difference'] = float(users[provider1].get('bid_changed_value','')) - float(artifact['provider1_bid_start_value'])
-    else:
-        artifact['provider1_bid_difference'] = 0
 
-    suite = BuiltIn().get_variable_value('${SUITE NAME}')
-    if ('openProcedure' in suite):
+    providers = []
+    for i in xrange(number_of_bids):
+        if  'provider' in used_roles[i + 2]:
+            provider_name = '${' + used_roles[i + 2] + '}'
+            providers.append(BuiltIn().get_variable_value(provider_name))
+
+    for i in xrange(number_of_bids):
+        field_access_token = 'provider' + str(i) + '_access_token'
+        field_bid_id = 'provider' + str(i) + '_bid_id'
+        field_bid_start_value = 'provider' + str(i) + '_bid_start_value'
+        field_bid_diff = 'provider' + str(i) + '_bid_difference'
+        provider_update = {
+            field_access_token: users[providers[i]].get('access_token', ''),
+            field_bid_id: users[providers[i]].get('bid_id', ''),
+            field_bid_start_value: users[providers[i]].get('bid_start_value', '')
+        }
+        if  users[providers[i]].get('bid_changed_value', '') != '' and provider_update[field_bid_start_value] != '':
+            if  float(users[providers[i]].get('bid_changed_value', '')) != 0:
+                provider_update[field_bid_diff] = float(users[providers[i]].get('bid_changed_value', '')) \
+                                                - float(provider_update[field_bid_start_value])
+        else:
+            provider_update[field_bid_diff] = 0
+        artifact.update(provider_update)
+
+    if  'openProcedure' in suite:
         log_object_data(data=artifact, file_name='artifact', update=False, artifact=True)
     else:
         log_object_data(data=artifact, file_name='artifact', update=True, artifact=True)
@@ -627,43 +634,44 @@ def create_artifact():
 
 def load_tender_data(filepath):
     artifact = load_data_from(filepath)
+    used_roles = BuiltIn().get_variable_value('@{USED_ROLES}')
     users = BuiltIn().get_variable_value('${USERS.users}')
     tender_owner = BuiltIn().get_variable_value('${tender_owner}')
-    provider = BuiltIn().get_variable_value('${provider}')
-    provider1 = BuiltIn().get_variable_value('${provider1}')
 
-    provider_update = {
-        'access_token': artifact.get('provider_access_token', ''),
-        'bid_id': artifact.get('provider_bid_id', ''),
-        'bid_start_value': artifact.get('provider_bid_start_value', '')
-    }
-    provider1_update = {
-        'access_token': artifact.get('provider1_access_token', ''),
-        'bid_id': artifact.get('provider1_bid_id', ''),
-        'bid_start_value': artifact.get('provider1_bid_start_value', '')
-    }
+    number_of_bids = artifact['number_of_bids']
+    providers = []
+    for i in xrange(number_of_bids):
+        if  'provider' in used_roles[i + 2]:
+            provider_name = '${' + used_roles[i + 2] + '}'
+            providers.append(BuiltIn().get_variable_value(provider_name))
 
-    users[provider].update(provider_update)
-    users[provider1].update(provider1_update)
+    for i in xrange(number_of_bids):
+        field_access_token = 'provider' + str(i) + '_access_token'
+        field_bid_id = 'provider' + str(i) + '_bid_id'
+        field_bid_start_value = 'provider' + str(i) + '_bid_start_value'
+        field_bid_diff = 'provider' + str(i) + '_bid_difference'
+        provider_update = {
+            'access_token': artifact.get(field_access_token, ''),
+            'bid_id': artifact.get(field_bid_id, ''),
+            'bid_start_value': artifact.get(field_bid_start_value, '')
+        }
+        if (artifact[field_bid_diff] == 0):
+            provider_update['bid_changed_value'] = 0
+        else:
+            provider_update['bid_changed_value'] = artifact[field_bid_start_value] + artifact[field_bid_diff]
+        users[providers[i]].update(provider_update)
+
     users[tender_owner].access_token = artifact.get('access_token', '')
 
-    if (artifact['provider_bid_difference'] == 0):
-        users[provider].bid_changed_value = 0
-    else:
-        users[provider].bid_changed_value = artifact['provider_bid_start_value'] + artifact['provider_bid_difference']
-    if (artifact['provider1_bid_difference'] == 0):
-        users[provider1].bid_changed_value = 0
-    else:
-        users[provider1].bid_changed_value = artifact['provider1_bid_start_value'] + artifact['provider1_bid_difference']
-
-    mode = artifact.get('mode', '')
     tender_data = {
         'TENDER_UAID': artifact.get('tender_uaid', ''),
         'LAST_MODIFICATION_DATE': artifact.get('last_modification_date', ''),
         'LOT_ID': ''
     }
 
-    BuiltIn().set_suite_variable("${MODE}", mode)
+    BuiltIn().set_suite_variable("${api_version}", artifact.get('api_version', ''))
+    BuiltIn().set_suite_variable("${MODE}", artifact.get('mode', ''))
+    BuiltIn().set_suite_variable("${NUMBER_OF_BIDS}", artifact.get('number_of_bids', ''))
     BuiltIn().set_suite_variable("${TENDER}", tender_data)
     # Suite variable artifact - for reading bid_ids from artifact (not bidresponses)
     BuiltIn().set_suite_variable("${ARTIFACT}", artifact)
