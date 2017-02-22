@@ -589,6 +589,14 @@ Resource           resource.robot
 #             BIDDING
 ##############################################################################################
 
+Можливість подати цінову пропозицію всіма учасниками
+  ${number_of_current_bids}=  Set Variable  ${0}
+  :FOR  ${username}  IN  @{USED_ROLES}
+  \  Run Keyword If      'provider' in '${username}' and ${number_of_current_bids} < ${NUMBER_OF_BIDS}
+  \  ...                 Можливість подати цінову пропозицію користувачем ${${username}}
+  \  ${number_of_bids}=  Set Variable If  'provider' in '${username}' and ${number_of_current_bids} < ${NUMBER_OF_BIDS}
+  \  ...                 ${number_of_bids + 1}  ${number_of_bids}
+
 Можливість подати цінову пропозицію користувачем ${username}
   ${bid}=  Підготувати дані для подання пропозиції  ${username}
   ${bidresponses}=  Create Dictionary  bid=${bid}

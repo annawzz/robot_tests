@@ -675,6 +675,15 @@ ${ITEM_MEAT}        ${True}
   Неможливість подати цінову попрозицію без кваліфікації користувачем ${provider}
 
 
+Можливість подати пропозицію всіма учасниками
+  [Tags]   ${USERS.users['${provider}'].broker}: Подання пропозиції
+  ...      provider
+  ...      ${USERS.users['${provider}'].broker}
+  ...      make_bid_by_providers  level1
+  [Teardown]  Оновити LAST_MODIFICATION_DATE
+  Можливість подати цінову пропозицію всіма учасниками
+
+
 Можливість подати пропозицію першим учасником
   [Tags]   ${USERS.users['${provider}'].broker}: Подання пропозиції
   ...      provider
