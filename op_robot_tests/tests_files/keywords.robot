@@ -62,6 +62,14 @@ Set Suite Variable With Default Value
 Завантажуємо дані про користувачів і майданчики
   Log  ${broker}
   Log  ${role}
+
+  # Set random amount of providers (2 to 5) if it's not defined when execute suite
+  ${random_value}=  generate_number_of_providers  artifact.yaml
+  ${NUMBER_OF_BIDS}=  Get Variable Value  ${NUMBER_OF_BIDS}  ${random_value}
+  Set Suite Variable  ${NUMBER_OF_BIDS}
+  Log  ${NUMBER_OF_BIDS}
+
+
   # Suite variable; should be present in every test suite
   # in `*** Variables ***` section
   Log Many  @{USED_ROLES}

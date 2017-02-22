@@ -60,6 +60,7 @@ from restkit import request
 # End of non-pointless imports
 import os
 import re
+import random
 
 NUM_TYPES = (int, long, float)
 
@@ -512,6 +513,16 @@ def get_current_bid_value(filepath, index):
         return float(artifact['provider1_bid_start_value']) + float(artifact['provider1_bid_difference'])
     else:
         raise ValueError("Invalid provider index")
+def generate_number_of_providers(filepath):
+    """In case when we run openProcedure random number(2 to 5) of providers
+    is generated. After openProcedure this number is read from artifact.
+    """
+    suite = BuiltIn().get_variable_value('${SUITE NAME}')
+    if  'openProcedure' in suite:
+        return random.randint(2, 5)
+    else:
+        artifact = load_data_from(filepath)
+        return artifact['number_of_bids']
 
 
 def generate_test_bid_data(tender_data):
