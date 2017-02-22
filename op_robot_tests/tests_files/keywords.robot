@@ -68,6 +68,9 @@ Set Suite Variable With Default Value
   ${NUMBER_OF_BIDS}=  Get Variable Value  ${NUMBER_OF_BIDS}  ${random_value}
   Set Suite Variable  ${NUMBER_OF_BIDS}
   Log  ${NUMBER_OF_BIDS}
+  # By default, in test suites we have 2 providers. If we running tests with more
+  # providers, we need to expand @{USED_ROLES} list
+  @{USED_ROLES}=  Expand used roles list  ${USED_ROLES}  ${NUMBER_OF_BIDS}
 
 
   # Suite variable; should be present in every test suite

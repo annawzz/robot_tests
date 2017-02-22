@@ -670,6 +670,21 @@ def load_tender_data(filepath):
     log_object_data(data=artifact, file_name='artifact', update=True, artifact=True)
 
 
+def expand_used_roles_list(used_roles, number_of_bids):
+    number_of_current_bidders = 0
+    for i in xrange(len(used_roles)):
+        if 'provider' in used_roles[i]:
+                number_of_current_bidders += 1
+    print 'bidders' + str(number_of_current_bidders)
+    for i in xrange(number_of_bids):
+        if  number_of_current_bidders < number_of_bids:
+            new_bidder = 'provider' + str(i + 2)
+            print str(new_bidder)
+            used_roles.append(new_bidder)
+            number_of_current_bidders += 1
+    return used_roles
+
+
 def compare_CAV_groups(length, *items):
     # Checks CAV groups of *items
     # Arguments: length - number of items
