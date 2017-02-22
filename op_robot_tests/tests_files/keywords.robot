@@ -388,6 +388,12 @@ Log differences between dicts
   Звірити поле тендера із значенням  ${username}  ${tender_uaid}  ${left}  bids[${bid_index}]['value']['amount']
 
 
+Звірити відображення ставки для усіх учасників
+  :FOR  ${bid_index}  IN RANGE  ${NUMBER_OF_BIDS}
+  \  ${username}=  Get From List  ${USED_ROLES}  ${bid_index + 2}
+  \  Звірити відображення ставки учасника  ${${username}}  ${TENDER['TENDER_UAID']}  ${bid_index}
+
+
 Звірити значення поля серед усіх документів тендера
   [Arguments]  ${username}  ${tender_uaid}  ${field}  ${value}
   ${number_of_documents}=  Run As  ${username}  Отримати кількість документів в тендері  ${tender_uaid}

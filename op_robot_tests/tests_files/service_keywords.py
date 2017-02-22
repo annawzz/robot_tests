@@ -507,10 +507,9 @@ def get_complaint_index_by_complaintID(data, complaintID):
 
 def get_current_bid_value(filepath, index):
     artifact = load_data_from(filepath)
-    if (index == '0'):
-        return float(artifact['provider_bid_start_value']) + float(artifact['provider_bid_difference'])
-    if (index == '1'):
-        return float(artifact['provider1_bid_start_value']) + float(artifact['provider1_bid_difference'])
+    field_bid_start_value = 'provider' + str(index) + '_bid_start_value'
+    field_bid_diff = 'provider' + str(index) + '_bid_difference'
+    return float(artifact[field_bid_start_value]) + float(artifact[field_bid_diff])
     else:
         raise ValueError("Invalid provider index")
 def generate_number_of_providers(filepath):
