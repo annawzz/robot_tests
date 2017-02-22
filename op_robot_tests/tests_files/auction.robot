@@ -16,8 +16,7 @@ Suite Teardown  Test Suite Teardown
   ...      ${USERS.users['${viewer}'].broker}
   ...      find_tender  level1
   load_tender_data  artifact.yaml
-  :FOR  ${username}  IN  ${viewer}  ${tender_owner}  ${provider}  ${provider1}
-  \   ${resp}=  Run As  ${username}  Пошук тендера по ідентифікатору   ${TENDER['TENDER_UAID']}
+  Можливість знайти тендер по ідентифікатору для усіх користувачів
 
 ##############################################################################################
 #             AUCTION

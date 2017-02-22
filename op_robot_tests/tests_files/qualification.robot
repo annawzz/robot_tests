@@ -20,8 +20,7 @@ ${award_index}      ${0}
   ...      ${USERS.users['${viewer}'].broker}  ${USERS.users['${tender_owner}'].broker}
   ...      find_tender  level1
   load_tender_data  artifact.yaml
-  :FOR  ${username}  IN  ${viewer}  ${tender_owner}  ${provider}  ${provider1}
-  \   ${resp}=  Run As  ${username}  Пошук тендера по ідентифікатору   ${TENDER['TENDER_UAID']}
+  Можливість знайти тендер по ідентифікатору для усіх користувачів
 
 
 Можливість дочекатись дати початку кваліфікації
