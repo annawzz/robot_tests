@@ -557,6 +557,10 @@ def mult_and_round(*args, **kwargs):
     return round(reduce(operator.mul, args), kwargs.get('precision', 2))
 
 
+def get_retry_time(amount, multiplier, reserve):
+    return multiplier * amount + reserve
+
+
 # GUI Frontends common
 def add_data_for_gui_frontends(tender_data):
     now = get_now()
