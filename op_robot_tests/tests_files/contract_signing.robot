@@ -1,11 +1,11 @@
 *** Settings ***
-Resource        keywords.robot
+Resource        base_keywords.robot
 Resource        resource.robot
 Suite Setup     Test Suite Setup
 Suite Teardown  Test Suite Teardown
 
 *** Variables ***
-@{USED_ROLES}   tender_owner  viewer  provider  provider1
+@{USED_ROLES}  tender_owner  viewer  provider  provider1
 
 
 *** Test Cases ***

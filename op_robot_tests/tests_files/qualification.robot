@@ -4,7 +4,7 @@ Suite Setup     Test Suite Setup
 Suite Teardown  Test Suite Teardown
 
 *** Variables ***
-@{USED_ROLES}   tender_owner  viewer  provider  provider1
+@{USED_ROLES}  tender_owner  viewer  provider  provider1
 
 ${award_index}      ${0}
 
