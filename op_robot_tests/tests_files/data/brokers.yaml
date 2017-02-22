@@ -63,9 +63,11 @@ Quinta:
             tender:  [0, 30]
     keywords_file: openprocurement_client
     roles:
-        provider:       Tender_User
-        provider1:      Tender_User1
-        provider2:      Tender_User2
+        provider:       Tender_UserA
+        provider1:      Tender_UserB
+        provider2:      Tender_UserC
+        provider3:      Tender_UserD
+        provider4:      Tender_UserE
         tender_owner:   Tender_Owner
         viewer:         Tender_Viewer
     timeout_on_wait: 15
