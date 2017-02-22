@@ -653,9 +653,11 @@ Resource           resource.robot
   Remove File  ${financial_license_path}
 
 
-Можливість завантажити протокол аукціону в пропозицію ${bid_index} користувачем ${username}
+Можливість завантажити протокол аукціону в ставку кандидатом
   ${auction_protocol_path}  ${file_title}  ${file_content}=  create_fake_doc
-  Run As  ${username}  Завантажити протокол аукціону  ${TENDER['TENDER_UAID']}  ${auction_protocol_path}  ${bid_index}
+  ${username}  ${bid_index}=  Визначити учасника з максимальною ставкою  ${viewer}  ${TENDER['TENDER_UAID']}
+  Run As  ${${username}}  Завантажити протокол аукціону  ${TENDER['TENDER_UAID']}  ${auction_protocol_path}  ${bid_index}
+  Оновити LMD і дочекатись синхронізації  ${${username}}
   Remove File  ${auction_protocol_path}
 
 ##############################################################################################

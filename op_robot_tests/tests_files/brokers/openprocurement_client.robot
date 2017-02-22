@@ -73,14 +73,16 @@ Library  openprocurement_client_helper.py
 
 
 Завантажити протокол аукціону
-  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${award_index}
+  [Arguments]  ${username}  ${tender_uaid}  ${filepath}  ${bid_index}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ${bid_id}=  Run Keyword If
   ...         '${username}' == '${provider}'
-  ...         Get Variable Value  ${ARTIFACT.provider_bid_id}  ${tender.data.awards[${award_index}].bid_id}
+  ...         Get Variable Value  ${ARTIFACT.provider_bid_id}  ${tender.data.bids[${bid_index}].id}
   ...         ELSE  Run Keyword If
   ...         '${username}' == '${provider1}'
-  ...         Get Variable Value  ${ARTIFACT.provider1_bid_id}  ${tender.data.awards[${award_index}].bid_id}
+  ...         Get Variable Value  ${ARTIFACT.provider1_bid_id}  ${tender.data.bids[${bid_index}].id}
+  ...         ELSE
+  ...         Get Variable Value  ${tender.data.bids[${bid_index}].id}
   ${tender}=  set_access_key  ${tender}  ${USERS.users['${username}'].access_token}
   ${response}=  Call Method  ${USERS.users['${username}'].client}  upload_bid_document  ${filepath}  ${tender}  ${bid_id}  documents
   Keep In Dictionary  ${response['data']}  id
@@ -668,6 +670,8 @@ Library  openprocurement_client_helper.py
   ...         ELSE  Run Keyword If
   ...         '${username}' == '${provider1}'
   ...         Get Variable Value  ${ARTIFACT.provider1_bid_id}  ${USERS.users['${username}'].bidresponses['resp'].data.id}
+  ...         ELSE
+  ...         Get Variable Value  ${USERS.users['${username}'].bidresponses['resp'].data.id}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ${tender}=  set_access_key  ${tender}  ${USERS.users['${username}'].bidresponses['resp'].access.token}
   ${response}=  Call Method  ${USERS.users['${username}'].client}  upload_bid_document  ${path}  ${tender}  ${bid_id}  ${doc_type}
@@ -684,6 +688,8 @@ Library  openprocurement_client_helper.py
   ...         ELSE  Run Keyword If
   ...         '${username}' == '${provider1}'
   ...         Get Variable Value  ${ARTIFACT.provider1_bid_id}  ${USERS.users['${username}'].bidresponses['resp'].data.id}
+  ...         ELSE
+  ...         Get Variable Value  ${USERS.users['${username}'].bidresponses['resp'].data.id}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ${tender}=  set_access_key  ${tender}  ${USERS.users['${username}'].bidresponses['resp'].access.token}
   ${response}=  Call Method  ${USERS.users['${username}'].client}  update_bid_document  ${path}  ${tender}   ${bid_id}   ${docid}
@@ -700,6 +706,8 @@ Library  openprocurement_client_helper.py
   ...         ELSE  Run Keyword If
   ...         '${username}' == '${provider1}'
   ...         Get Variable Value  ${ARTIFACT.provider1_bid_id}  ${USERS.users['${username}'].bidresponses['resp'].data.id}
+  ...         ELSE
+  ...         Get Variable Value  ${USERS.users['${username}'].bidresponses['resp'].data.id}
   ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
   ${tender}=  set_access_key  ${tender}  ${USERS.users['${username}'].bidresponses['resp'].access.token}
   ${reply}=  Call Method  ${USERS.users['${username}'].client}  patch_bid_document   ${tender}   ${doc_data}   ${bid_id}   ${docid}
@@ -763,6 +771,13 @@ Library  openprocurement_client_helper.py
 ##############################################################################
 #             Qualification operations
 ##############################################################################
+
+Визначити учасника з максимальною ставкою
+  [Arguments]  ${username}  ${tender_uaid}
+  ${tender}=  openprocurement_client.Пошук тендера по ідентифікатору  ${username}  ${tender_uaid}
+  ${provider_name}  ${bid_index}=  Get Winner Bid  artifact.yaml  ${tender}
+  [return]  ${provider_name}  ${bid_index}
+
 
 Завантажити документ рішення кваліфікаційної комісії
   [Documentation]

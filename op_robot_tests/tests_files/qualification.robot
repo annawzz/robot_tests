@@ -257,8 +257,7 @@ ${award_index}      ${0}
   ...  provider
   ...  ${USERS.users['${provider}'].broker}
   ...  qualification_add_auction_protocol_to_bid  level1
-  [Teardown]  Оновити LMD і дочекатись синхронізації  ${provider}
-  Можливість завантажити протокол аукціону в пропозицію 0 користувачем ${provider}
+  Можливість завантажити протокол аукціону в ставку кандидатом
 
 
 Можливість перевірити протокол аукціону кандидата
@@ -267,7 +266,8 @@ ${award_index}      ${0}
   ...  ${USERS.users['${tender_owner}'].broker}
   ...  qualification_approve_doc_to_first_award  level2
   [Setup]  Дочекатись синхронізації з майданчиком  ${tender_owner}
-  Звірити значення поля серед усіх документів ставки  ${tender_owner}  ${TENDER['TENDER_UAID']}  documentType  auctionProtocol  0
+  ${provider_name}  ${bid_index}=  Визначити учасника з максимальною ставкою  ${tender_owner}  ${TENDER['TENDER_UAID']}
+  Звірити значення поля серед усіх документів ставки  ${tender_owner}  ${TENDER['TENDER_UAID']}  documentType  auctionProtocol  ${bid_index}
 
 
 Можливість підтвердити учасника
@@ -317,8 +317,7 @@ ${award_index}      ${0}
   ...  ${USERS.users['${provider1}'].broker}
   ...  qualification_add_auction_protocol_to_second_bid  level1
   [Setup]  Дочекатись синхронізації з майданчиком  ${provider1}
-  [Teardown]  Оновити LMD і дочекатись синхронізації  ${provider1}
-  Можливість завантажити протокол аукціону в пропозицію -1 користувачем ${provider1}
+  Можливість завантажити протокол аукціону в ставку кандидатом
 
 
 Можливість перевірити протокол аукціону нового кандидата
@@ -327,7 +326,8 @@ ${award_index}      ${0}
   ...  ${USERS.users['${tender_owner}'].broker}
   ...  qualification_approve_doc_to_second_award  level2
   [Setup]  Дочекатись синхронізації з майданчиком  ${tender_owner}
-  Звірити значення поля серед усіх документів ставки  ${tender_owner}  ${TENDER['TENDER_UAID']}  documentType  auctionProtocol  -1
+  ${provider_name}  ${bid_index}=  Визначити учасника з максимальною ставкою  ${tender_owner}  ${TENDER['TENDER_UAID']}
+  Звірити значення поля серед усіх документів ставки  ${tender_owner}  ${TENDER['TENDER_UAID']}  documentType  auctionProtocol  ${bid_index}
 
 
 Можливість підтвердити нового учасника

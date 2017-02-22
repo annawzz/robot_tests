@@ -510,8 +510,30 @@ def get_current_bid_value(filepath, index):
     field_bid_start_value = 'provider' + str(index) + '_bid_start_value'
     field_bid_diff = 'provider' + str(index) + '_bid_difference'
     return float(artifact[field_bid_start_value]) + float(artifact[field_bid_diff])
+
+
+def get_winner_bid(filepath, tender_data):
+    artifact = load_data_from(filepath)
+    number_of_bids = artifact.get('number_of_bids', '')
+
+    for i in xrange(len(tender_data['data']['awards'])):
+        if  tender_data['data']['awards'][i]['status'] == 'pending':
+            winner_bid_id = tender_data['data']['awards'][i].get('bid_id', '')
+
+    winner_index = 0
+    for i in xrange(number_of_bids):
+        field_bid_id = 'provider' + str(i) + '_bid_id'
+        if  artifact[field_bid_id] == winner_bid_id:
+            winner_index = i
+
+    if  winner_index == 0:
+        winner_name = 'provider'
     else:
-        raise ValueError("Invalid provider index")
+        winner_name = 'provider' + str(winner_index)
+
+    return winner_name, winner_index
+
+
 def generate_number_of_providers(filepath):
     """In case when we run openProcedure random number(2 to 5) of providers
     is generated. After openProcedure this number is read from artifact.
