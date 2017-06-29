@@ -60,7 +60,7 @@
   -i open_confirm_first_bid
 -i bid_view_in_tendering_period
 
--i add_bid_doc_after_tendering_period_by_provider
+#-i add_bid_doc_after_tendering_period_by_provider
 
 -i qualification_add_doc_to_first_award
 -i qualification_approve_first_award
