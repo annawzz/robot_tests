@@ -81,10 +81,11 @@ def test_tender_data(params, periods=("enquiry", "tender")):
         "features": []
     }
     accelerator = params['intervals']['accelerator']
-    data['procurementMethodDetails'] = 'quick, ' \
-        'accelerator={}'.format(accelerator)
+    # data['procurementMethodDetails'] = 'quick, ' \
+    #     'accelerator={}'.format(accelerator)
     data["procuringEntity"]["kind"] = "other"
     if data.get("mode") == "test":
+        data["title"] = u"[REGIM DE TESTARE]".format(data["title"])
         data["title_en"] = u"[TESTING] {}".format(data["title_en"])
     period_dict = {}
     inc_dt = now
@@ -247,6 +248,15 @@ def test_confirm_data(id):
     })
 
 
+def test_pending_signed_data(id):
+    return munchify({
+        "data": {
+            "status": "pending.signed",
+            "id": id
+        }
+    })
+
+
 def test_submit_claim_data(claim_id):
     return munchify({
         "data": {
@@ -296,7 +306,7 @@ def test_supplier_data():
             "value": {
                 "amount": fake.random_int(min=1),
                 "currency": "MDL",
-                "valueAddedTaxIncluded": False 
+                "valueAddedTaxIncluded": False
             },
             "qualified": True
         }

@@ -1016,6 +1016,14 @@ Resource           resource.robot
   Remove File  ${file_path}
 
 
+Можливість передати угоду закупівлі на затвердження
+  Run as  ${tender_owner}
+  ...      Передати контракт на затвердження
+  ...      ${TENDER['TENDER_UAID']}
+  ...      ${0}
+  Run Keyword And Ignore Error  Remove From Dictionary  ${USERS.users['${viewer}'].tender_data.data.contracts[0]}  status
+
+
 Можливість укласти угоду для закупівлі
   Run as  ${tender_owner}
   ...      Підтвердити підписання контракту
